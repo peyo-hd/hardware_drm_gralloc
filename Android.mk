@@ -29,7 +29,6 @@ nouveau_drivers := nouveau
 vmwgfx_drivers := vmwgfx
 
 valid_drivers := \
-	prebuilt \
 	$(intel_drivers) \
 	$(radeon_drivers) \
 	$(nouveau_drivers) \
@@ -52,30 +51,6 @@ endif
 ifneq ($(strip $(DRM_GPU_DRIVERS)),)
 
 LOCAL_PATH := $(call my-dir)
-
-
-# Use the PREBUILT libraries
-ifeq ($(strip $(DRM_GPU_DRIVERS)),prebuilt)
-
-include $(CLEAR_VARS)
-LOCAL_MODULE := libgralloc_drm
-LOCAL_MODULE_TAGS := optional
-LOCAL_SRC_FILES := ../../$(BOARD_GPU_DRIVER_BINARY)
-LOCAL_MODULE_CLASS := SHARED_LIBRARIES
-LOCAL_MODULE_SUFFIX := $(TARGET_SHLIB_SUFFIX)
-include $(BUILD_PREBUILT)
-
-include $(CLEAR_VARS)
-LOCAL_MODULE := gralloc.$(TARGET_PRODUCT)
-LOCAL_MODULE_TAGS := optional
-LOCAL_MODULE_PATH := $(TARGET_OUT_SHARED_LIBRARIES)/hw/
-LOCAL_SRC_FILES := ../../$(BOARD_GPU_DRIVER_BINARY)
-LOCAL_MODULE_CLASS := SHARED_LIBRARIES
-LOCAL_MODULE_SUFFIX := $(TARGET_SHLIB_SUFFIX)
-include $(BUILD_PREBUILT)
-
-# Use the sources
-else
 
 include $(CLEAR_VARS)
 LOCAL_MODULE := libgralloc_drm
@@ -169,5 +144,4 @@ LOCAL_MODULE_TAGS := optional
 LOCAL_MODULE_PATH := $(TARGET_OUT_SHARED_LIBRARIES)/hw/
 include $(BUILD_SHARED_LIBRARY)
 
-endif # DRM_GPU_DRIVERS=prebuilt
 endif # DRM_GPU_DRIVERS
