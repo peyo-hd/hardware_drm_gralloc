@@ -211,7 +211,7 @@ static struct gralloc_drm_bo_t *validate_handle(buffer_handle_t _handle,
 		}
 
 		handle->data_owner = gralloc_drm_get_pid();
-		handle->data = (int) bo;
+		handle->data = (intptr_t) bo;
 	}
 
 	return (struct gralloc_drm_bo_t *) handle->data;
@@ -296,7 +296,7 @@ struct gralloc_drm_bo_t *gralloc_drm_bo_create(struct gralloc_drm_t *drm,
 	bo->refcount = 1;
 
 	handle->data_owner = gralloc_drm_get_pid();
-	handle->data = (int) bo;
+	handle->data = (intptr_t)bo;
 
 	return bo;
 }
