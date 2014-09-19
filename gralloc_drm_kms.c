@@ -55,7 +55,11 @@ static unsigned int drm_format_from_hal(int hal_format)
 		case HAL_PIXEL_FORMAT_RGBX_8888:
 			return DRM_FORMAT_XBGR8888;
 		case HAL_PIXEL_FORMAT_RGBA_8888:
+#ifdef ENABLE_INTEL
+			return DRM_FORMAT_XBGR8888;
+#else
 			return DRM_FORMAT_RGBA8888;
+#endif
 		case HAL_PIXEL_FORMAT_RGB_565:
 			return DRM_FORMAT_RGB565;
 		case HAL_PIXEL_FORMAT_YV12:
