@@ -28,7 +28,7 @@ extern "C" {
 
 enum {
 
-	HAL_PIXEL_FORMAT_DRM_NV12 = 0x102,
+	HAL_PIXEL_FORMAT_DRM_NV12 = 0x15,
 };
 
 enum {
