@@ -116,6 +116,9 @@ static struct pipe_buffer *get_pipe_buffer_locked(struct pipe_manager *pm,
 	memset(&templ, 0, sizeof(templ));
 	templ.format = get_pipe_format(handle->format);
 	templ.bind = get_pipe_bind(handle->usage);
+#ifdef ENABLE_PIPE_VC4
+	templ.bind &= ~(PIPE_BIND_SHARED|PIPE_BIND_SCANOUT);
+#endif
 	templ.target = PIPE_TEXTURE_2D;
 
 	if (templ.format == PIPE_FORMAT_NONE ||
@@ -368,18 +371,30 @@ static void pipe_destroy(struct gralloc_drm_drv_t *drv)
 	FREE(pm);
 }
 
+#ifdef ENABLE_PIPE_NOUVEAU
 /* for nouveau */
 #include "nouveau/drm/nouveau_drm_public.h"
+#endif
+#ifdef ENABLE_PIPE_R300
 /* for r300 */
 #include "radeon/drm/radeon_drm_public.h"
 #include "r300/r300_public.h"
+#endif
+#ifdef ENABLE_PIPE_R600
 /* for r600 */
 #include "radeon/drm/radeon_winsys.h"
 #include "r600/r600_public.h"
+#endif
+#ifdef ENABLE_PIPE_VC4
+/* for vc4 */
+#include "vc4/drm/vc4_drm_public.h"
+#endif
+#ifdef ENABLE_PIPE_VMWGFX
 /* for vmwgfx */
 #include "svga/drm/svga_drm_public.h"
 #include "svga/svga_winsys.h"
 #include "svga/svga_public.h"
+#endif
 /* for debug */
 #include "target-helpers/inline_debug_helper.h"
 
@@ -413,6 +428,11 @@ static int pipe_init_screen(struct pipe_manager *pm)
 		}
 	}
 #endif
+#ifdef ENABLE_PIPE_VC4
+	if (strcmp(pm->driver, "vc4") == 0) {
+		screen = vc4_drm_screen_create(pm->fd);
+	}
+#endif
 #ifdef ENABLE_PIPE_VMWGFX
 	if (strcmp(pm->driver, "vmwgfx") == 0) {
 		struct svga_winsys_screen *sws =
@@ -425,6 +445,7 @@ static int pipe_init_screen(struct pipe_manager *pm)
 		}
 	}
 #endif
+
 
 	if (!screen) {
 		ALOGW("failed to create screen for %s", pm->driver);
@@ -518,6 +539,10 @@ static int pipe_find_driver(struct pipe_manager *pm, const char *name)
 	else {
 		if (strcmp(name, "vmwgfx") == 0) {
 			driver = "vmwgfx";
+			err = 0;
+		}
+		if (strcmp(name, "vc4") == 0) {
+			driver = "vc4";
 			err = 0;
 		}
 	}
