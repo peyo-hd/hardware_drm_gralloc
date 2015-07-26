@@ -131,6 +131,8 @@ endif
 
 LOCAL_STATIC_LIBRARIES += \
 	libmesa_gallium \
+	libmesa_glsl \
+	libmesa_glsl_utils \
 	libmesa_util
 LOCAL_SHARED_LIBRARIES += libdl
 endif # DRM_USES_PIPE
